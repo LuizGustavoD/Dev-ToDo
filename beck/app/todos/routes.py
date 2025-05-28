@@ -1,7 +1,10 @@
 from flaks import Blueprint, request, jsonify
 from .models import db, Todo
+from flask_cors import CORS
 
 todo_bp = Blueprint('todos', __name__)
+CORS(todo_bp)
+
 @todo_bp.route('/todos', methods=['GET'])
 def get_todos():
     todos = Todo.query.all()

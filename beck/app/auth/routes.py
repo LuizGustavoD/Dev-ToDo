@@ -1,7 +1,10 @@
 from flaks import Blueprint, request, jsonify
 from .models import db, User
+from flask_cors import CORS
 
 auth_bp = Blueprint('auth', __name__)
+CORS(auth_bp)
+
 @auth_bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
