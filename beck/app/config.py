@@ -1,7 +1,9 @@
 import os
+from dotenv import load_dotenv
 
-# Pseudoconfiguration for a Flask application
+load_dotenv()
+
 class Config:
-    SECRET_KEY = os.getenv('SECRET_KEY', 'segredo-muito-secreto')
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///todos.db')
-    JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'segredo-jwt')
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SECRET_KEY = os.getenv('SECRET_KEY', 'default-secret-key')

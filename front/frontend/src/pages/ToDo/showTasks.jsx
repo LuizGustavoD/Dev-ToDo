@@ -1,5 +1,5 @@
 
-import '../App.css'
+import './ToDoStyle.css';
 
 function ShowTasks({ tasks, onDelete }) {
   return  (

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import '../App.css'
+import './ToDoStyle.css';
 
 function AddTask({ onAdd }) {
   const [task, setTask] = useState('');
@@ -21,16 +21,30 @@ function AddTask({ onAdd }) {
         placeholder="Descrição da tarefa"
       />
       <button
-        className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg shadow-md hover:bg-blue-700 transition cursiror-pointer focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50"
+        className="w-full bg-blue-600 text-white font-semibold py-3 rounded-lg shadow-md hover:bg-blue-700 transition cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50"
         onClick={() => {
           if (task.trim() && description.trim()) {
-            onAdd({ task, description });
+            // Mude de 'task' para 'title' para corresponder ao modelo
+            fetch('http://localhost:5000/api/todos', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ 
+                title: task,  // Agora usando 'title' em vez de 'task'
+                description: description 
+              })
+            })
+            .then(res => res.json())
+            .then(data => {
+              console.log(data.message);
+              onAdd({ title: task, description }); // atualiza local
+              setTask('');
+              setDescription('');
+            });
           } else {
             alert("Preencha os campos corretamente!");
-            return;
           }
-          setTask('');
-          setDescription('');
         }}
       >
         Adicionar Tarefa
