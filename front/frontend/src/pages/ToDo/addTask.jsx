@@ -32,7 +32,8 @@ function AddTask({ onAdd }) {
               },
               body: JSON.stringify({ 
                 title: task,  // Agora usando 'title' em vez de 'task'
-                description: description 
+                description: description,
+                user: localStorage.getItem('username') 
               })
             })
             .then(res => res.json())

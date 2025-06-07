@@ -13,7 +13,19 @@ function ShowTasks({ tasks, onDelete }) {
             <p className="text-gray-600">{task.description}</p>
             <button
               className="mt-2 text-red-600 hover:text-red-800 cursor-pointer font-semibold transition-colors duration-200"
-              onClick={() => onDelete(index)}
+              onClick={() => {
+                onDelete(index); // remove da lista local
+                fetch(`http://localhost:5000/api/todos/${task.title}`, {
+                  method: 'DELETE',
+                })
+                .then((res) => {
+                  if (!res.ok) throw new Error('Erro ao deletar no backend');
+                  console.log('Tarefa deletada com sucesso no backend');
+                })
+                .catch((err) => {
+                  console.error('Erro ao deletar tarefa:', err);
+                });
+              }}
             >
               Excluir
             </button>

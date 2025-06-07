@@ -1,21 +1,55 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
-import { Outlet } from 'react-router-dom'
-import { Link } from 'react-router-dom'
+import { Outlet, Link, useNavigate } from 'react-router-dom'
 import AddTask from './pages/ToDo/addTask'
 import ShowTasks from './pages/ToDo/showTasks'
 
-
 function App() {
   const [tasks, setTasks] = useState([])
+  const [usuario, setUsuario] = useState(null)
+  const navigate = useNavigate()
 
+  // Carrega autenticação ao montar o componente
+  useEffect(() => {
+    fetch("http://localhost:5000/auth/verify", {
+      method: "GET",
+      credentials: "include"
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setUsuario(data.username)
+        } else {
+          setUsuario(null)
+        }
+      })
+      .catch((err) => {
+        console.error("Erro ao verificar autenticação:", err)
+        setUsuario(null)
+      })
+  }, [])
 
   function deleteTask(index) {
     const newTasks = tasks.filter((_, i) => i !== index)
     setTasks(newTasks)
   }
+
   function addTask(newTaskObj) {
-    setTasks([...tasks, newTaskObj]);
+    setTasks([...tasks, newTaskObj])
+  }
+
+  function handleLogout() {
+    fetch("http://localhost:5000/auth/logout", {
+      method: "POST",
+      credentials: "include"
+    })
+      .then(() => {
+        setUsuario(null)
+        navigate("/login")
+      })
+      .catch((err) => {
+        console.error("Erro ao fazer logout:", err)
+      })
   }
 
   return (
@@ -24,20 +58,38 @@ function App() {
         <nav className="absolute right-8 top-1/2 -translate-y-1/2">
           <ul className="flex space-x-6">
             <li>
-              <Link
-                to="/login"
-                className="px-4 py-2 rounded-lg text-blue-600 font-semibold hover:bg-blue-50 hover:text-blue-800 transition-colors duration-200 shadow-sm"
-              >
-                Login
-              </Link>
+              {usuario ? (
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-2 rounded-lg text-blue-600 font-semibold hover:bg-blue-50 hover:text-blue-800 transition-colors duration-200 shadow-sm"
+                >
+                  Logout
+                </button>
+              ) : (
+                <Link
+                  to="/login"
+                  className="px-4 py-2 rounded-lg text-blue-600 font-semibold hover:bg-blue-50 hover:text-blue-800 transition-colors duration-200 shadow-sm"
+                >
+                  Login
+                </Link>
+              )}
             </li>
             <li>
-              <Link
-                to="/register"
-                className="px-4 py-2 rounded-lg text-white bg-gradient-to-r from-blue-500 to-purple-500 font-semibold hover:from-blue-600 hover:to-purple-600 transition-colors duration-200 shadow-md"
-              >
-                My Account
-              </Link>
+              {usuario ? (
+                <Link
+                  to="/account"
+                  className="px-4 py-2 rounded-lg text-white bg-gradient-to-r from-blue-500 to-purple-500 font-semibold hover:from-blue-600 hover:to-purple-600 transition-colors duration-200 shadow-md"
+                >
+                  My Account
+                </Link>
+              ) : (
+                <Link
+                  to="/register"
+                  className="px-4 py-2 rounded-lg text-white bg-gradient-to-r from-blue-500 to-purple-500 font-semibold hover:from-blue-600 hover:to-purple-600 transition-colors duration-200 shadow-md"
+                >
+                  Register
+                </Link>
+              )}
             </li>
           </ul>
         </nav>

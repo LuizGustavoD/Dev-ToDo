@@ -26,6 +26,11 @@ const router = createBrowserRouter([
     element: <LoginPage />,
     errorElement: <ErrorPage />
   },
+  {
+    path: '/myAccount',
+    element: <App />,
+    errorElement: <ErrorPage />,
+  },
 ]);
 
 createRoot(document.getElementById('root')).render(

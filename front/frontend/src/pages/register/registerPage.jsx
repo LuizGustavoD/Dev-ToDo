@@ -48,8 +48,27 @@ function RegisterPage() {
           onClick={(e) => {
             e.preventDefault()
             console.log('Registering:', { username, password })
+            fetch('http://localhost:5000/api/auth', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                action: 'register',
+                username,
+                password
+              })
+            })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Resposta do registro:', data.message);
+        })
+        .catch(error => {
+          console.error('Erro ao registrar:', error);
+        });
+
           }}
-          className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-2 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition duration-300"
+          className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold py-2 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition duration-300 hover:cursor-pointer"
         >
           Register
         </button>
